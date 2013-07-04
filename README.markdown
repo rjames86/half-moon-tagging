@@ -14,7 +14,6 @@ Here be dragons. You use this at your own risk.
     tag - Mavericks command line tool for tagging files
 
     Usage:
-      tag <path>
       tag --list <path>...
       tag --add <tag> <path>...
       tag --set <tag> <path>...
@@ -25,7 +24,7 @@ Here be dragons. You use this at your own risk.
     Options:
       -l --list          List all tags at each path
       -a --add=<tag>     Add one or more (comma separated) tags to paths
-      -r --set=<tag>     Set one or more (comma separated) tags on paths
+      -s --set=<tag>     Set one or more (comma separated) tags on paths
       -r --remove=<tag>  Remove one or more (comma separated) tags from paths
       -h --help          Show this screen.
       --version          Show version.
