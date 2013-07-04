@@ -59,6 +59,8 @@ def add_tag(path, tag):
     set_tags(path, tags)
 
 def add_tags(path, tags):
+    if not tags:
+        return
     old_tags = get_tags(path)
     new_tags = old_tags + [tag for tag in tags if tag not in old_tags]
     set_tags(path, new_tags)
