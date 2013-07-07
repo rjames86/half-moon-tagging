@@ -21,8 +21,9 @@ __author__ = 'schwa'
 
 from docopt import docopt
 import sys
-# import shlex
-# import subprocess
+import Foundation
+import shlex
+import subprocess
 
 import biplist # pip install --user biplist
 import xattr # pip install --user xattr
@@ -35,22 +36,31 @@ import xattr # pip install --user xattr
 #    raw_tag = [raw_tag for raw_tag  in raw_tags(sample_path) if raw_tag.startswith(tag)][0]
 #    return raw_tag
 
-def get_raw_tags(path):
-    if 'com.apple.metadata:_kMDItemUserTags' in xattr.listxattr(path):
-        d = xattr.getxattr(path, 'com.apple.metadata:_kMDItemUserTags')
-        d = biplist.readPlistFromString(d)
-        return d
-    else:
-        return []
+#def get_raw_tags(path):
+#    if 'com.apple.metadata:_kMDItemUserTags' in xattr.listxattr(path):
+#        d = xattr.getxattr(path, 'com.apple.metadata:_kMDItemUserTags')
+#        d = biplist.readPlistFromString(d)
+#        return d
+#    else:
+#        return []
+
+# def set_tags(path, tags):
+#    data = biplist.writePlistToString(tags)
+#    xattr.setxattr(path, 'com.apple.metadata:_kMDItemUserTags', data)
 
 def get_tags(path):
-    tags = get_raw_tags(path)
-    tags = [tag.split('\n')[0] for tag in tags]
+    url = Foundation.NSURL.fileURLWithPath_(path)
+    metadata, error = url.resourceValuesForKeys_error_([ 'NSURLTagNamesKey' ], None)
+    tags = metadata['NSURLTagNamesKey']
     return tags
 
 def set_tags(path, tags):
-    data = biplist.writePlistToString(tags)
-    xattr.setxattr(path, 'com.apple.metadata:_kMDItemUserTags', data)
+    url = Foundation.NSURL.fileURLWithPath_(path)
+    result = url.setResourceValue_forKey_error_(tags, 'NSURLTagNamesKey', None)
+    if not result:
+        raise Exception('Could not set tags')
+#    data = biplist.writePlistToString(tags)
+#    xattr.setxattr(path, 'com.apple.metadata:_kMDItemUserTags', data)
 
 def add_tag(path, tag):
     tags = get_tags(path)
@@ -82,7 +92,7 @@ def split_tags(s):
     return tags
 
 def main(argv = None):
-    #    argv = shlex.split(raw_input('$ tag '))
+    #argv = shlex.split(raw_input('$ tag '))
     arguments = docopt(__doc__, argv = argv, version='tag 1.0a1')
     if arguments['--list']:
         for path in arguments['<path>']:
