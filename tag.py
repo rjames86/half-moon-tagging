@@ -37,7 +37,7 @@ def set_tags(path, tags):
     url = Foundation.NSURL.fileURLWithPath_(path)
     result, error = url.setResourceValue_forKey_error_(tags, NSURLTagNamesKey, None)
     if not result:
-        raise Exception('Could not set tags', error.encode('ascii', 'ignore'))
+        raise Exception('Could not set tags', unicode(error).encode('ascii', 'ignore'))
 
 def add_tag(path, tag):
     tags = get_tags(path)
