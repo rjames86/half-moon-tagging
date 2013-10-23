@@ -10,8 +10,6 @@ setup(
     description='Mavericks command line tool for tagging files',
 	install_requires = [
 		'docopt',
-        'biplist',
-        'xattr',
 		],
 	py_modules=['tag'],
 	scripts=['tag'],
