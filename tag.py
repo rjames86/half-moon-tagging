@@ -109,9 +109,6 @@ def main(argv = None):
         tags = split_tags(arguments['--remove'])
         for path in arguments['<path>']:
             remove_tags(path, tags)
-    elif arguments['--list']:
-        for path in arguments['<path>']:
-            print '{} ({})'.format(path, ', '.join(get_tags(path)))
 
 if __name__ == '__main__':
     main()
