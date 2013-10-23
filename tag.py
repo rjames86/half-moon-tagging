@@ -20,47 +20,24 @@ Options:
 __author__ = 'schwa'
 
 from docopt import docopt
-import sys
 import Foundation
-import shlex
-import subprocess
 
-import biplist # pip install --user biplist
-import xattr # pip install --user xattr
-
-#def raw_tag_for_tag(tag):
-#    output = subprocess.check_output(['mdfind', 'kMDItemUserTags == \'{}\''.format(tag)])
-#    sample_path = output.split('\n')[0]
-#    if not sample_path:
-#        return tag
-#    raw_tag = [raw_tag for raw_tag  in raw_tags(sample_path) if raw_tag.startswith(tag)][0]
-#    return raw_tag
-
-#def get_raw_tags(path):
-#    if 'com.apple.metadata:_kMDItemUserTags' in xattr.listxattr(path):
-#        d = xattr.getxattr(path, 'com.apple.metadata:_kMDItemUserTags')
-#        d = biplist.readPlistFromString(d)
-#        return d
-#    else:
-#        return []
-
-# def set_tags(path, tags):
-#    data = biplist.writePlistToString(tags)
-#    xattr.setxattr(path, 'com.apple.metadata:_kMDItemUserTags', data)
+NSURLTagNamesKey = 'NSURLTagNamesKey'
 
 def get_tags(path):
     url = Foundation.NSURL.fileURLWithPath_(path)
-    metadata, error = url.resourceValuesForKeys_error_([ 'NSURLTagNamesKey' ], None)
-    tags = metadata['NSURLTagNamesKey']
-    return tags
+    metadata, error = url.resourceValuesForKeys_error_([ NSURLTagNamesKey ], None)
+    if not metadata:
+        return []
+    if NSURLTagNamesKey not in metadata:
+        return []
+    return metadata[NSURLTagNamesKey]
 
 def set_tags(path, tags):
     url = Foundation.NSURL.fileURLWithPath_(path)
-    result = url.setResourceValue_forKey_error_(tags, 'NSURLTagNamesKey', None)
+    result, error = url.setResourceValue_forKey_error_(tags, NSURLTagNamesKey, None)
     if not result:
-        raise Exception('Could not set tags')
-#    data = biplist.writePlistToString(tags)
-#    xattr.setxattr(path, 'com.apple.metadata:_kMDItemUserTags', data)
+        raise Exception('Could not set tags', error.encode('ascii', 'ignore'))
 
 def add_tag(path, tag):
     tags = get_tags(path)
