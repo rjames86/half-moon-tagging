@@ -43,6 +43,7 @@ def add_tag(path, tag):
     tags = get_tags(path)
     if tag in tags:
         return
+    tags.append(tag)
     set_tags(path, tags)
 
 def add_tags(path, tags):
